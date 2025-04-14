@@ -4,6 +4,116 @@ A TypeScript Express API server using tRPC for type-safe API calls between the f
 
 ## Getting Started
 
+## Add to supabase
+
+Create new briefs table and brief-documents bucket.
+
+```sql
+-- ======================================
+-- 1. Enable UUID Extension
+-- ======================================
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- ======================================
+-- 2. Create Briefs Table
+-- ======================================
+CREATE TABLE IF NOT EXISTS briefs (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  notes TEXT,
+  file_path TEXT NOT NULL,
+  summary TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ======================================
+-- 3. Enable Row Level Security
+-- ======================================
+ALTER TABLE briefs ENABLE ROW LEVEL SECURITY;
+
+-- ======================================
+-- 4. RLS Policies for Briefs Table
+-- ======================================
+
+-- Allow users to view only their own briefs
+CREATE POLICY "Users can view their own briefs"
+  ON briefs
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- Allow users to insert briefs for themselves
+CREATE POLICY "Users can create their own briefs"
+  ON briefs
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+-- Allow users to update only their own briefs
+CREATE POLICY "Users can update their own briefs"
+  ON briefs
+  FOR UPDATE
+  USING (auth.uid() = user_id);
+
+-- Allow users to delete only their own briefs
+CREATE POLICY "Users can delete their own briefs"
+  ON briefs
+  FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- ======================================
+-- 5. RLS Policies for Supabase Storage
+-- ======================================
+-- These assume the bucket is named "brief-documents"
+-- The UI settings enforce:
+-- - Private bucket
+-- - Max file size: 50MB
+-- - Allowed MIME type: text/plain
+
+-- Allow inserting only to user's own folder (user_id prefix)
+CREATE POLICY "Users can upload files to their own folder"
+  ON storage.objects
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (
+    bucket_id = 'brief-documents'
+    AND (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- Allow users to view only their own files
+CREATE POLICY "Users can view their own files"
+  ON storage.objects
+  FOR SELECT
+  TO authenticated
+  USING (
+    bucket_id = 'brief-documents'
+    AND (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- Allow users to update only their own files
+CREATE POLICY "Users can update their own files"
+  ON storage.objects
+  FOR UPDATE
+  TO authenticated
+  USING (
+    bucket_id = 'brief-documents'
+    AND (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- Allow users to delete only their own files
+CREATE POLICY "Users can delete their own files"
+  ON storage.objects
+  FOR DELETE
+  TO authenticated
+  USING (
+    bucket_id = 'brief-documents'
+    AND (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+```
+
+```bash
+# Install dependencies
 ```bash
 # Install dependencies
 pnpm install
