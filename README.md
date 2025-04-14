@@ -10,7 +10,7 @@ BriefMe allows users to upload text documents (up to 50MB), add notes, and recei
 
 This project was built to meet the following requirements:
 
-### Frontend ✅
+### Frontend
 
 - **React with TypeScript**: Implemented with Next.js 14+ and strict TypeScript
 - **Responsive Design**: Fully responsive UI that adapts to both desktop and mobile
@@ -20,21 +20,21 @@ This project was built to meet the following requirements:
   - Submit button that triggers upload and processing
   - Dynamic rendering of document and summary as they become available
 
-### Backend/API ✅
+### Backend/API
 
 - **Supabase Integration**: Used for storage, database, and authentication
 - **Background Processing**: Implements an intelligent document summarization service
 - **LLM Integration**: Uses OpenAI's GPT-4o Mini for high-quality summarization
 - **Data Storage**: Securely stores documents and summaries in Supabase
 
-### Technical Requirements ✅
+### Technical Requirements
 
 - **Secure Storage**: Files are not publicly accessible, signed URLs with expiration
 - **Clean Architecture**: Separation of concerns with well-defined layers
 - **User-Specific Access**: Row-level security enforces user isolation
 - **Environment Variables**: Comprehensive setup for both frontend and backend
 
-### Bonus Features ✅
+### Bonus Features
 
 - **Robust Processing Flow**: Handles large documents with:
   - Semantic chunking and overlap
@@ -45,7 +45,7 @@ This project was built to meet the following requirements:
 - **Upgraded UI**: Clean, intuitive interface with responsive components
 - **Search Functionality**: Search across document titles, notes, and summaries
 
-## 🏗️ Architecture
+## Architecture
 
 BriefMe follows a clean architecture pattern with clear separation of concerns:
 
