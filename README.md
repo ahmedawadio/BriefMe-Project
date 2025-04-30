@@ -2,11 +2,34 @@
 
 A full-stack document summarization application built with Next.js, TypeScript, tRPC, and Supabase.
 
+<div align="center">
+  <a href="https://www.loom.com/share/c5287f31795e4b6bbc854b551377159a?sid=4fab83d8-797a-4ddc-b6fb-46bc229702ff">
+    <img src="assets/video_preview.png" width="300" alt="BriefMe Demo Video - Upload Interface">
+    <br>
+    <sub>🎥 Watch the demo video to see BriefMe in action</sub>
+  </a>
+</div>
+
 ## Overview
 
-BriefMe allows users to upload text documents (up to 50MB), add notes, and receive AI-generated summaries powered by OpenAI. The application features secure authentication, responsive design, and an intelligent summarization service that adapts to documents of any size.
+BriefMe allows users to upload text documents (up to 50MB), attach notes, and receive AI-generated summaries powered by OpenAI. Built with full-stack type safety using tRPC and TypeScript, every API route and data structure is strictly typed for a smooth developer experience with complete autocompletion and zero runtime type errors.
 
-## 🎯 Assessment Requirements & Implementation
+Key features include secure authentication, a responsive UI, and an adaptive summarization pipeline that scales from short documents to multi-million-line files.
+
+The backend adjusts processing based on document size:
+
+- **Small Documents**: Direct summarization using GPT-4o Mini for quick and efficient processing
+- **Large Documents**: Advanced processing pipeline that:
+  - Splits documents into 1000-character chunks with 100-character overlaps, preserving semantic coherence
+  - Generates embeddings for each chunk using OpenAI's text-embedding-3-small model
+  - Uses parallel processing with rate limiting (10 concurrent calls) for efficient processing
+  - Applies cosine similarity to identify the top 20 most semantically relevant chunks
+  - Generates a final summary from the most relevant content
+- **Robust Error Handling**: Implements exponential backoff retry mechanisms and fallback strategies
+
+This adaptive approach allows BriefMe to efficiently process documents of any size, from short texts to documents with millions of lines, while maintaining high-quality summarization.
+
+## Assessment Requirements & Implementation
 
 This project was built to meet the following requirements:
 
@@ -75,7 +98,7 @@ BriefMe/
 3. **Intelligent Summarization**: Adaptive processing based on document size
 4. **Optimized State Management**: Zustand for client state, React Query for server state
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -91,12 +114,12 @@ For detailed installation instructions:
 - **Backend**: See [Backend Documentation](./api/README.md)
 - **Frontend**: See [Frontend Documentation](./app/README.md)
 
-## 📚 Detailed Documentation
+## Detailed Documentation
 
 - [Frontend Documentation](./app/README.md) - Details on the Next.js application
 - [Backend Documentation](./api/README.md) - Details on the API and summarization service
 
-## 🔍 Usage
+## Usage
 
 1. **Sign up/Login**: Create an account or login to access the application
 2. **Upload Document**: Use the upload page to submit a text file (up to 50MB) with optional notes
@@ -104,7 +127,7 @@ For detailed installation instructions:
 4. **Search Documents**: Use the search functionality to find documents by title, notes, or summary content
 5. **Regenerate Summary**: If needed, you can request a new summary for any document
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 ### Frontend
 
